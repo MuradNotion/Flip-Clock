@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Responsive Flip Clock</title>
+  <title>Minimal Flip Clock</title>
   <style>
     :root {
-      --clock-scale: 1; /* 🔁 Set to 0.5 for small, 2 for large, etc. */
+      --clock-scale: 1; /* 🔁 Adjust: 0.5 = small, 2 = large */
     }
 
     * {
@@ -18,15 +18,15 @@
     body {
       background: transparent;
       color: #fff;
+      height: 100vh;
       display: flex;
       justify-content: flex-start;
       align-items: flex-start;
-      height: 100vh;
       padding: 20px;
       transition: color 0.3s;
     }
 
-    .clock-wrapper {
+    .clock-container {
       transform: scale(var(--clock-scale));
       transform-origin: top left;
     }
@@ -37,8 +37,8 @@
       border: 1px solid #444;
       border-radius: 8px;
       padding: 20px;
-      position: relative;
       background-color: rgba(0, 0, 0, 0.85);
+      position: relative;
       transition: background-color 0.3s, border-color 0.3s;
     }
 
@@ -97,7 +97,7 @@
   </style>
 </head>
 <body>
-  <div class="clock-wrapper">
+  <div class="clock-container">
     <div class="clock">
       <div class="dot-toggle" onclick="toggleMode()"></div>
       <div class="time-box" id="hour">12</div>
