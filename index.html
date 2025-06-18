@@ -16,9 +16,9 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: #000;
+      background: transparent;
       color: #fff;
-      transition: background 0.3s, color 0.3s;
+      transition: color 0.3s;
     }
 
     .clock-wrapper {
@@ -28,7 +28,8 @@
       padding: 1rem 1.5rem;
       display: flex;
       gap: 1rem;
-      background: #000;
+      background: transparent;
+      transition: border-color 0.3s;
     }
 
     .dot-toggle {
@@ -40,54 +41,66 @@
       border-radius: 50%;
       background: #888;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background 0.3s, border-color 0.3s;
       border: 1px solid #444;
     }
 
     .digit {
       position: relative;
-      display: inline-block;
+      width: 90px;
+      height: 100px;
       font-size: 4rem;
       font-weight: bold;
-      padding: 0.5rem 1rem;
-      background: #111;
-      border-radius: 4px;
-      overflow: hidden;
       perspective: 1000px;
     }
 
-    .digit span {
-      display: block;
-      transition: transform 0.5s ease;
+    .digit-inner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    .digit-top,
+    .digit-bottom {
+      height: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .digit-top {
+      border-bottom: 1px solid currentColor;
+    }
+
+    .digit-bottom {
+      border-top: 1px solid currentColor;
       transform-origin: top;
+      transition: transform 0.5s ease;
     }
 
-    .flip {
-      animation: flipDown 0.5s ease;
+    .flip .digit-bottom {
+      transform: rotateX(-180deg);
     }
 
-    @keyframes flipDown {
-      0% {
-        transform: rotateX(0deg);
-      }
-      100% {
-        transform: rotateX(-180deg);
-      }
+    .ampm {
+      font-size: 1.2rem;
+      font-weight: bold;
+      align-self: flex-end;
+      padding-bottom: 0.3rem;
     }
 
-    /* Light mode */
     body.light {
-      background: #fff;
       color: #000;
     }
 
     body.light .clock-wrapper {
-      background: #fff;
       border-color: #ccc;
-    }
-
-    body.light .digit {
-      background: #eee;
     }
 
     body.light .dot-toggle {
@@ -100,31 +113,63 @@
   <div class="clock-wrapper">
     <div class="dot-toggle" onclick="toggleMode()"></div>
 
-    <div class="digit"><span id="hours">00</span></div>
-    <div class="digit"><span id="minutes">00</span></div>
-    <div class="digit"><span id="seconds">00</span></div>
+    <div class="digit" id="digit-hours">
+      <div class="digit-inner">
+        <div class="digit-top" id="hours-top">00</div>
+        <div class="digit-bottom" id="hours-bottom">00</div>
+      </div>
+    </div>
+
+    <div class="digit" id="digit-minutes">
+      <div class="digit-inner">
+        <div class="digit-top" id="minutes-top">00</div>
+        <div class="digit-bottom" id="minutes-bottom">00</div>
+      </div>
+    </div>
+
+    <div class="ampm" id="ampm">AM</div>
   </div>
 
   <script>
-    let prev = { hours: '', minutes: '', seconds: '' };
+    let prev = { hours: '', minutes: '', ampm: '' };
 
     function updateClock() {
       const now = new Date();
+      let hours = now.getHours();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+
       const time = {
-        hours: String(now.getHours()).padStart(2, '0'),
+        hours: String(hours).padStart(2, '0'),
         minutes: String(now.getMinutes()).padStart(2, '0'),
-        seconds: String(now.getSeconds()).padStart(2, '0'),
+        ampm: ampm,
       };
 
-      ['hours', 'minutes', 'seconds'].forEach((unit) => {
-        const el = document.getElementById(unit);
-        if (el.textContent !== time[unit]) {
-          el.textContent = time[unit];
-          el.parentElement.classList.remove('flip');
-          void el.offsetWidth; // force reflow
-          el.parentElement.classList.add('flip');
-        }
-      });
+      // Update hours
+      if (time.hours !== prev.hours) {
+        document.getElementById('hours-top').textContent = time.hours;
+        document.getElementById('hours-bottom').textContent = time.hours;
+        const hWrap = document.getElementById('digit-hours');
+        hWrap.classList.remove('flip');
+        void hWrap.offsetWidth;
+        hWrap.classList.add('flip');
+      }
+
+      // Update minutes
+      if (time.minutes !== prev.minutes) {
+        document.getElementById('minutes-top').textContent = time.minutes;
+        document.getElementById('minutes-bottom').textContent = time.minutes;
+        const mWrap = document.getElementById('digit-minutes');
+        mWrap.classList.remove('flip');
+        void mWrap.offsetWidth;
+        mWrap.classList.add('flip');
+      }
+
+      // Update AM/PM
+      const ampmEl = document.getElementById('ampm');
+      if (ampmEl.textContent !== time.ampm) {
+        ampmEl.textContent = time.ampm;
+      }
 
       prev = time;
     }
