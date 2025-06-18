@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Minimal Flip Clock</title>
   <style>
     * {
@@ -21,34 +21,69 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    .clock {
+    .clock-wrapper {
+      position: relative;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 1rem 1.5rem;
       display: flex;
       gap: 1rem;
-      font-size: 5rem;
-    }
-
-    .digit {
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      background: #111;
-      transition: background 0.3s;
+      background: #000;
     }
 
     .dot-toggle {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
+      top: -6px;
+      right: -6px;
       width: 12px;
       height: 12px;
       border-radius: 50%;
       background: #888;
       cursor: pointer;
       transition: background 0.3s;
+      border: 1px solid #444;
     }
 
+    .digit {
+      position: relative;
+      display: inline-block;
+      font-size: 4rem;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      background: #111;
+      border-radius: 4px;
+      overflow: hidden;
+      perspective: 1000px;
+    }
+
+    .digit span {
+      display: block;
+      transition: transform 0.5s ease;
+      transform-origin: top;
+    }
+
+    .flip {
+      animation: flipDown 0.5s ease;
+    }
+
+    @keyframes flipDown {
+      0% {
+        transform: rotateX(0deg);
+      }
+      100% {
+        transform: rotateX(-180deg);
+      }
+    }
+
+    /* Light mode */
     body.light {
       background: #fff;
       color: #000;
+    }
+
+    body.light .clock-wrapper {
+      background: #fff;
+      border-color: #ccc;
     }
 
     body.light .digit {
@@ -57,24 +92,41 @@
 
     body.light .dot-toggle {
       background: #444;
+      border-color: #ccc;
     }
   </style>
 </head>
 <body>
-  <div class="dot-toggle" onclick="toggleMode()"></div>
+  <div class="clock-wrapper">
+    <div class="dot-toggle" onclick="toggleMode()"></div>
 
-  <div class="clock">
-    <div class="digit" id="hours">00</div>
-    <div class="digit" id="minutes">00</div>
-    <div class="digit" id="seconds">00</div>
+    <div class="digit"><span id="hours">00</span></div>
+    <div class="digit"><span id="minutes">00</span></div>
+    <div class="digit"><span id="seconds">00</span></div>
   </div>
 
   <script>
+    let prev = { hours: '', minutes: '', seconds: '' };
+
     function updateClock() {
       const now = new Date();
-      document.getElementById('hours').textContent = String(now.getHours()).padStart(2, '0');
-      document.getElementById('minutes').textContent = String(now.getMinutes()).padStart(2, '0');
-      document.getElementById('seconds').textContent = String(now.getSeconds()).padStart(2, '0');
+      const time = {
+        hours: String(now.getHours()).padStart(2, '0'),
+        minutes: String(now.getMinutes()).padStart(2, '0'),
+        seconds: String(now.getSeconds()).padStart(2, '0'),
+      };
+
+      ['hours', 'minutes', 'seconds'].forEach((unit) => {
+        const el = document.getElementById(unit);
+        if (el.textContent !== time[unit]) {
+          el.textContent = time[unit];
+          el.parentElement.classList.remove('flip');
+          void el.offsetWidth; // force reflow
+          el.parentElement.classList.add('flip');
+        }
+      });
+
+      prev = time;
     }
 
     function toggleMode() {
