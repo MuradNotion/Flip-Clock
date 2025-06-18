@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Fliqlo-Style Flip Clock</title>
+  <title>Flip Clock</title>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: monospace;
+      font-family: 'Segoe UI', sans-serif;
     }
 
     body {
@@ -25,10 +25,10 @@
       display: flex;
       gap: 1rem;
       border: 1px solid #444;
-      border-radius: 6px;
-      padding: 1rem 2rem;
+      border-radius: 8px;
+      padding: 1.5rem;
       position: relative;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.85);
       transition: background-color 0.3s, border-color 0.3s;
     }
 
@@ -45,27 +45,29 @@
       transition: background 0.3s, border-color 0.3s;
     }
 
-    .flip-unit {
+    .time-box {
       width: 120px;
-      height: 160px;
+      height: 120px;
+      background-color: rgba(255, 255, 255, 0.05);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 6rem;
-      font-weight: bold;
-      overflow: hidden;
+      font-size: 5rem;
+      font-weight: 800;
+      border-radius: 4px;
+      transition: background-color 0.3s;
     }
 
     .ampm {
       font-size: 2rem;
-      font-weight: bold;
+      font-weight: 700;
       align-self: flex-end;
       display: flex;
       align-items: flex-end;
       padding-bottom: 1rem;
     }
 
-    /* Light Mode Styles */
+    /* Light Mode */
     body.light {
       color: #000;
     }
@@ -79,14 +81,18 @@
       background: #444;
       border-color: #ccc;
     }
+
+    body.light .time-box {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
   </style>
 </head>
 <body>
   <div class="clock">
     <div class="dot-toggle" onclick="toggleMode()"></div>
 
-    <div class="flip-unit" id="hour">12</div>
-    <div class="flip-unit" id="minute">00</div>
+    <div class="time-box" id="hour">12</div>
+    <div class="time-box" id="minute">00</div>
     <div class="ampm" id="ampm">AM</div>
   </div>
 
