@@ -28,6 +28,8 @@
       border-radius: 6px;
       padding: 1rem 2rem;
       position: relative;
+      background-color: rgba(0, 0, 0, 0.8);
+      transition: background-color 0.3s, border-color 0.3s;
     }
 
     .dot-toggle {
@@ -44,41 +46,14 @@
     }
 
     .flip-unit {
-      position: relative;
       width: 120px;
       height: 160px;
-      perspective: 1000px;
-      font-size: 6rem;
-      font-weight: bold;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    .flip-upper,
-    .flip-lower {
-      width: 100%;
-      height: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: transparent;
-    }
-
-    .flip-upper {
-      border-bottom: 1px solid currentColor;
-    }
-
-    .flip-lower {
-      border-top: 1px solid currentColor;
-      transform-origin: top;
-      transition: transform 0.5s ease;
-    }
-
-    .flip.flip-lower {
-      transform: rotateX(-180deg);
+      font-size: 6rem;
+      font-weight: bold;
+      overflow: hidden;
     }
 
     .ampm {
@@ -90,11 +65,13 @@
       padding-bottom: 1rem;
     }
 
+    /* Light Mode Styles */
     body.light {
       color: #000;
     }
 
     body.light .clock {
+      background-color: rgba(255, 255, 255, 0.9);
       border-color: #ccc;
     }
 
@@ -108,16 +85,8 @@
   <div class="clock">
     <div class="dot-toggle" onclick="toggleMode()"></div>
 
-    <div class="flip-unit" id="hour-unit">
-      <div class="flip-upper" id="hour-upper">12</div>
-      <div class="flip-lower" id="hour-lower">12</div>
-    </div>
-
-    <div class="flip-unit" id="minute-unit">
-      <div class="flip-upper" id="minute-upper">00</div>
-      <div class="flip-lower" id="minute-lower">00</div>
-    </div>
-
+    <div class="flip-unit" id="hour">12</div>
+    <div class="flip-unit" id="minute">00</div>
     <div class="ampm" id="ampm">AM</div>
   </div>
 
@@ -134,27 +103,9 @@
       const hh = String(h).padStart(2, '0');
       const mm = String(m).padStart(2, '0');
 
-      if (prev.h !== hh) {
-        document.getElementById('hour-upper').textContent = hh;
-        document.getElementById('hour-lower').textContent = hh;
-        const unit = document.getElementById('hour-unit');
-        unit.classList.remove('flip');
-        void unit.offsetWidth;
-        unit.classList.add('flip');
-      }
-
-      if (prev.m !== mm) {
-        document.getElementById('minute-upper').textContent = mm;
-        document.getElementById('minute-lower').textContent = mm;
-        const unit = document.getElementById('minute-unit');
-        unit.classList.remove('flip');
-        void unit.offsetWidth;
-        unit.classList.add('flip');
-      }
-
-      if (prev.ampm !== ampm) {
-        document.getElementById('ampm').textContent = ampm;
-      }
+      if (hh !== prev.h) document.getElementById('hour').textContent = hh;
+      if (mm !== prev.m) document.getElementById('minute').textContent = mm;
+      if (ampm !== prev.ampm) document.getElementById('ampm').textContent = ampm;
 
       prev = { h: hh, m: mm, ampm };
     }
