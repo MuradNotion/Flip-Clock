@@ -1,102 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Flip Clock</title>
+  <meta charset="UTF-8">
+  <title>Minimal Flip Clock</title>
   <style>
     * {
       box-sizing: border-box;
-      font-family: 'Courier New', monospace;
+      font-family: monospace;
       margin: 0;
       padding: 0;
     }
 
     body {
       display: flex;
+      justify-content: center;
+      align-items: center;
       height: 100vh;
-      background-color: #111;
+      background: #000;
       color: #fff;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    .sidebar {
-      flex: 1;
-      background-color: #1e1e1e;
-      padding: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      border-right: 1px solid #444;
-    }
-
-    .clock-container {
-      flex: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      transition: background 0.3s, color 0.3s;
     }
 
     .clock {
       display: flex;
       gap: 1rem;
+      font-size: 5rem;
     }
 
     .digit {
-      background: #000;
-      color: #0f0;
-      padding: 2rem 1.5rem;
-      font-size: 4rem;
-      border-radius: 8px;
-      box-shadow: inset 0 -5px 0 rgba(255,255,255,0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      background: #111;
+      transition: background 0.3s;
     }
 
-    .toggle-btn {
-      margin-top: 2rem;
-      padding: 0.5rem 1rem;
+    .dot-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #888;
       cursor: pointer;
-      border: none;
-      border-radius: 4px;
-      background-color: #444;
-      color: #fff;
-      font-size: 1rem;
-      transition: background-color 0.3s;
+      transition: background 0.3s;
     }
 
     body.light {
-      background-color: #f9f9f9;
+      background: #fff;
       color: #000;
-    }
-
-    body.light .sidebar {
-      background-color: #e1e1e1;
-      border-right: 1px solid #ccc;
     }
 
     body.light .digit {
-      background: #fff;
-      color: #333;
-      box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.1);
+      background: #eee;
     }
 
-    body.light .toggle-btn {
-      background-color: #ddd;
-      color: #000;
+    body.light .dot-toggle {
+      background: #444;
     }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    Flip Clock
-  </div>
-  <div class="clock-container">
-    <div class="clock" id="clock">
-      <div class="digit" id="hours">00</div>
-      <div class="digit" id="minutes">00</div>
-      <div class="digit" id="seconds">00</div>
-    </div>
-    <button class="toggle-btn" onclick="toggleMode()">Toggle Mode</button>
+  <div class="dot-toggle" onclick="toggleMode()"></div>
+
+  <div class="clock">
+    <div class="digit" id="hours">00</div>
+    <div class="digit" id="minutes">00</div>
+    <div class="digit" id="seconds">00</div>
   </div>
 
   <script>
