@@ -5,34 +5,41 @@
   <title>Responsive Flip Clock</title>
   <style>
     :root {
-      --size-small: 0.6;
-      --size-medium: 1;
-      --size-large: 1.5;
-      --size-xlarge: 2;
+      --clock-scale: 1; /* 🔁 Set to 0.5 for small, 2 for large, etc. */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
     }
 
     body {
       background: transparent;
       color: #fff;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      justify-content: flex-start;
+      align-items: flex-start;
       height: 100vh;
-      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
       transition: color 0.3s;
+    }
+
+    .clock-wrapper {
+      transform: scale(var(--clock-scale));
+      transform-origin: top left;
     }
 
     .clock {
       display: flex;
-      gap: calc(10px * var(--scale));
-      border: calc(1px * var(--scale)) solid #444;
-      border-radius: calc(6px * var(--scale));
-      padding: calc(20px * var(--scale));
+      gap: 10px;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 20px;
       position: relative;
       background-color: rgba(0, 0, 0, 0.85);
       transition: background-color 0.3s, border-color 0.3s;
-      transform: scale(var(--scale));
-      transform-origin: top left;
     }
 
     .dot-toggle {
@@ -87,21 +94,16 @@
     body.light .time-box {
       background-color: rgba(0, 0, 0, 0.05);
     }
-
-    /* Scale Variants */
-    body.size-small { --scale: var(--size-small); }
-    body.size-medium { --scale: var(--size-medium); }
-    body.size-large { --scale: var(--size-large); }
-    body.size-xlarge { --scale: var(--size-xlarge); }
   </style>
 </head>
-<body class="size-medium">
-  <div class="clock">
-    <div class="dot-toggle" onclick="toggleMode()"></div>
-
-    <div class="time-box" id="hour">12</div>
-    <div class="time-box" id="minute">00</div>
-    <div class="ampm" id="ampm">AM</div>
+<body>
+  <div class="clock-wrapper">
+    <div class="clock">
+      <div class="dot-toggle" onclick="toggleMode()"></div>
+      <div class="time-box" id="hour">12</div>
+      <div class="time-box" id="minute">00</div>
+      <div class="ampm" id="ampm">AM</div>
+    </div>
   </div>
 
   <script>
@@ -127,19 +129,6 @@
     function toggleMode() {
       document.body.classList.toggle('light');
     }
-
-    // Optional: use keyboard keys to change size (s = small, m = medium, l = large, x = xlarge)
-    document.addEventListener('keydown', (e) => {
-      const sizeMap = {
-        s: 'size-small',
-        m: 'size-medium',
-        l: 'size-large',
-        x: 'size-xlarge'
-      };
-      if (sizeMap[e.key]) {
-        document.body.className = sizeMap[e.key] + (document.body.classList.contains('light') ? ' light' : '');
-      }
-    });
 
     setInterval(updateTime, 1000);
     updateTime();
