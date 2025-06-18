@@ -2,17 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Scalable Flip Clock</title>
+  <title>Responsive Flip Clock</title>
   <style>
-:root {
-  --clock-size: 120px; /* 🔁 You can make this 80px, 200px, etc. */
-}
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
+    :root {
+      --size-small: 0.6;
+      --size-medium: 1;
+      --size-large: 1.5;
+      --size-xlarge: 2;
     }
 
     body {
@@ -22,18 +18,21 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
       transition: color 0.3s;
     }
 
     .clock {
       display: flex;
-      gap: calc(var(--clock-size) * 0.15);
-      border: 1px solid #444;
-      border-radius: calc(var(--clock-size) * 0.07);
-      padding: calc(var(--clock-size) * 0.15);
+      gap: calc(10px * var(--scale));
+      border: calc(1px * var(--scale)) solid #444;
+      border-radius: calc(6px * var(--scale));
+      padding: calc(20px * var(--scale));
       position: relative;
       background-color: rgba(0, 0, 0, 0.85);
       transition: background-color 0.3s, border-color 0.3s;
+      transform: scale(var(--scale));
+      transform-origin: top left;
     }
 
     .dot-toggle {
@@ -50,28 +49,27 @@
     }
 
     .time-box {
-      width: var(--clock-size);
-      height: var(--clock-size);
+      width: 120px;
+      height: 120px;
       background-color: rgba(255, 255, 255, 0.05);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: calc(var(--clock-size) * 0.42);
+      font-size: 5rem;
       font-weight: 800;
-      border-radius: calc(var(--clock-size) * 0.05);
+      border-radius: 4px;
       transition: background-color 0.3s;
     }
 
     .ampm {
-      font-size: calc(var(--clock-size) * 0.25);
+      font-size: 2rem;
       font-weight: 700;
       align-self: flex-end;
       display: flex;
       align-items: flex-end;
-      padding-bottom: calc(var(--clock-size) * 0.1);
+      padding-bottom: 1rem;
     }
 
-    /* Light Mode */
     body.light {
       color: #000;
     }
@@ -89,9 +87,15 @@
     body.light .time-box {
       background-color: rgba(0, 0, 0, 0.05);
     }
+
+    /* Scale Variants */
+    body.size-small { --scale: var(--size-small); }
+    body.size-medium { --scale: var(--size-medium); }
+    body.size-large { --scale: var(--size-large); }
+    body.size-xlarge { --scale: var(--size-xlarge); }
   </style>
 </head>
-<body>
+<body class="size-medium">
   <div class="clock">
     <div class="dot-toggle" onclick="toggleMode()"></div>
 
@@ -123,6 +127,19 @@
     function toggleMode() {
       document.body.classList.toggle('light');
     }
+
+    // Optional: use keyboard keys to change size (s = small, m = medium, l = large, x = xlarge)
+    document.addEventListener('keydown', (e) => {
+      const sizeMap = {
+        s: 'size-small',
+        m: 'size-medium',
+        l: 'size-large',
+        x: 'size-xlarge'
+      };
+      if (sizeMap[e.key]) {
+        document.body.className = sizeMap[e.key] + (document.body.classList.contains('light') ? ' light' : '');
+      }
+    });
 
     setInterval(updateTime, 1000);
     updateTime();
