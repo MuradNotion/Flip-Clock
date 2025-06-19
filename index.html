@@ -7,61 +7,41 @@
   <style>
     * {
       box-sizing: border-box;
+      font-family: 'Courier New', monospace;
     }
 
-    html, body {
+    body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      width: 100%;
-      background: transparent;
-      font-family: 'Segoe UI', sans-serif;
-      overflow: hidden;
-    }
-
-    .clock-wrapper {
-      width: 100%;
-      height: 100%;
+      background: #111;
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh;
     }
 
     .clock {
       display: flex;
-      gap: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 20px;
-      background-color: rgba(255, 255, 255, 0.95);
-      color: #000;
-      position: relative;
-      transition: background-color 0.3s, border-color 0.3s;
-      transform-origin: center center;
-      cursor: pointer; /* Makes entire clock clickable */
+      gap: 20px;
     }
 
     .time-box {
-      width: 120px;
-      height: 120px;
-      background-color: rgba(0, 0, 0, 0.05);
+      position: relative;
+      width: 150px;
+      height: 200px;
+      background: #222;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 5rem;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 5rem;
-      font-weight: 800;
-      border-radius: 8px;
       perspective: 1000px;
-      position: relative;
+      transition: transform 0.6s ease;
     }
 
-    .time-content {
-      display: inline-block;
-      transform-origin: bottom;
-    }
-
-    .flip {
-      animation: flip 0.5s ease;
+    .time-box.flipping {
+      animation: flip 0.6s ease;
     }
 
     @keyframes flip {
@@ -69,106 +49,80 @@
         transform: rotateX(0deg);
       }
       50% {
-        transform: rotateX(-90deg);
+        transform: rotateX(90deg);
       }
       100% {
         transform: rotateX(0deg);
       }
     }
 
-    .ampm {
+    .am-pm {
       position: absolute;
-      bottom: 5px;
-      right: 5px;
+      top: 8px;
+      left: 10px;
       font-size: 1rem;
-      font-weight: 300;
-      padding: 2px 4px;
+      color: #ccc;
     }
 
-    body.dark .clock {
-      background-color: rgba(0, 0, 0, 0.85);
-      border-color: #444;
-      color: #fff;
-    }
-
-    body.dark .time-box {
-      background-color: rgba(255, 255, 255, 0.1);
+    .colon {
+      color: white;
+      font-size: 5rem;
+      display: flex;
+      align-items: center;
     }
   </style>
 </head>
 <body>
-  <div class="clock-wrapper">
-    <div class="clock" id="clock" onclick="toggleMode()">
-      <div class="time-box">
-        <div class="time-content" id="hour">12</div>
-      </div>
-      <div class="time-box">
-        <div class="time-content" id="minute">00</div>
-        <div class="ampm" id="ampm">AM</div>
-      </div>
+  <div class="clock">
+    <div class="time-box" id="hourBox">
+      <div class="am-pm" id="ampm">AM</div>
+      <div id="hour">12</div>
+    </div>
+    <div class="colon">:</div>
+    <div class="time-box" id="minuteBox">
+      <div id="minute">00</div>
     </div>
   </div>
 
   <script>
-    let prevHour = '';
-    let prevMinute = '';
+    const hourBox = document.getElementById('hourBox');
+    const minuteBox = document.getElementById('minuteBox');
+    const hourEl = document.getElementById('hour');
+    const minuteEl = document.getElementById('minute');
+    const ampmEl = document.getElementById('ampm');
+
+    let lastHour = '';
+    let lastMinute = '';
 
     function updateTime() {
       const now = new Date();
-      let h = now.getHours();
-      const ampm = h >= 12 ? 'PM' : 'AM';
-      h = h % 12 || 12;
-      const m = now.getMinutes();
+      let hour = now.getHours();
+      const minute = now.getMinutes();
+      const ampm = hour >= 12 ? 'PM' : 'AM';
 
-      const hourStr = String(h).padStart(2, '0');
-      const minuteStr = String(m).padStart(2, '0');
+      hour = hour % 12 || 12;
 
-      updateFlip('hour', hourStr, prevHour);
-      updateFlip('minute', minuteStr, prevMinute);
+      const paddedMinute = String(minute).padStart(2, '0');
+      const paddedHour = String(hour).padStart(2, '0');
 
-      prevHour = hourStr;
-      prevMinute = minuteStr;
+      if (paddedHour !== lastHour) {
+        hourBox.classList.add('flipping');
+        setTimeout(() => hourBox.classList.remove('flipping'), 600);
+        hourEl.textContent = paddedHour;
+        ampmEl.textContent = ampm;
+        lastHour = paddedHour;
+      }
 
-      document.getElementById('ampm').textContent = ampm;
-    }
-
-    function updateFlip(id, newVal, prevVal) {
-      const el = document.getElementById(id);
-      if (newVal !== prevVal) {
-        el.classList.remove('flip');
-        void el.offsetWidth; // trigger reflow
-        el.textContent = newVal;
-        el.classList.add('flip');
+      if (paddedMinute !== lastMinute) {
+        minuteBox.classList.add('flipping');
+        setTimeout(() => minuteBox.classList.remove('flipping'), 600);
+        minuteEl.textContent = paddedMinute;
+        lastMinute = paddedMinute;
       }
     }
 
-    function toggleMode() {
-      document.body.classList.toggle('dark');
-      localStorage.setItem('darkMode', document.body.classList.contains('dark') ? 'true' : 'false');
-    }
-
-    function scaleClock() {
-      const clock = document.getElementById('clock');
-      const wrapper = document.querySelector('.clock-wrapper');
-      const w = wrapper.clientWidth;
-      const h = wrapper.clientHeight;
-
-      const baseWidth = (120 * 2) + 10 + 40 + 8;
-      const baseHeight = 120 + 40 + 8;
-
-      const scale = Math.min(w / baseWidth, h / baseHeight);
-      clock.style.transform = `scale(${scale})`;
-    }
-
-    window.addEventListener('resize', scaleClock);
-    window.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark');
-      }
-      updateTime();
-      scaleClock();
-      setInterval(updateTime, 1000);
-    });
+    setInterval(updateTime, 1000);
+    updateTime();
   </script>
 </body>
 </html>
