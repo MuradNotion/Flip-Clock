@@ -37,7 +37,7 @@
       color: #000;
       position: relative;
       transition: background-color 0.3s, border-color 0.3s;
-      transform-origin: center;
+      transform-origin: center center;
     }
 
     .dot-toggle {
@@ -50,7 +50,6 @@
       background: #333;
       border: 1px solid #aaa;
       cursor: pointer;
-      transition: all 0.3s;
       z-index: 10;
     }
 
@@ -64,7 +63,6 @@
       font-size: 5rem;
       font-weight: 800;
       border-radius: 8px;
-      transition: background-color 0.3s;
       perspective: 1000px;
     }
 
@@ -165,8 +163,11 @@
       const wrapper = document.querySelector('.clock-wrapper');
       const w = wrapper.clientWidth;
       const h = wrapper.clientHeight;
-      const baseWidth = 400; // base clock width (approximate)
-      const baseHeight = 160; // base clock height (approximate)
+
+      // Base size: clock width = (2 boxes + gap + padding + border)
+      const baseWidth = (120 * 2) + 10 + 40 + 2; 
+      const baseHeight = 120 + 40 + 2; 
+
       const scale = Math.min(w / baseWidth, h / baseHeight);
       clock.style.transform = `scale(${scale})`;
     }
