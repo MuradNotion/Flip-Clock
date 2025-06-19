@@ -40,19 +40,20 @@
       transform-origin: center center;
     }
 
-    .dot-toggle {
-      position: absolute;
-      bottom: 5px;
-      left: 5px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #333;
-      border: 1px solid #aaa;
-      cursor: pointer;
-      z-index: 10;
-    }
-
+ .dot-toggle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #333;
+  border: 1px solid #aaa;
+  cursor: pointer;
+  z-index: 10;
+}
+    
     .time-box {
       width: 120px;
       height: 120px;
