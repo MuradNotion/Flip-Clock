@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Flip Clock Fullscreen</title>
+  <title>Flip Clock</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * {
@@ -38,22 +38,9 @@
       position: relative;
       transition: background-color 0.3s, border-color 0.3s;
       transform-origin: center center;
+      cursor: pointer; /* Makes entire clock clickable */
     }
 
- .dot-toggle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: #333;
-  border: 1px solid #aaa;
-  cursor: pointer;
-  z-index: 10;
-}
-    
     .time-box {
       width: 120px;
       height: 120px;
@@ -96,7 +83,6 @@
       font-size: 1rem;
       font-weight: 300;
       padding: 2px 4px;
-
     }
 
     body.dark .clock {
@@ -105,24 +91,14 @@
       color: #fff;
     }
 
-    body.dark .dot-toggle {
-      background: #888;
-      border-color: #444;
-    }
-
     body.dark .time-box {
       background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    body.dark .ampm {
-  
     }
   </style>
 </head>
 <body>
   <div class="clock-wrapper">
-    <div class="clock" id="clock">
-      <div class="dot-toggle" onclick="toggleMode()"></div>
+    <div class="clock" id="clock" onclick="toggleMode()">
       <div class="time-box">
         <div class="time-content" id="hour">12</div>
       </div>
@@ -160,7 +136,7 @@
       const el = document.getElementById(id);
       if (newVal !== prevVal) {
         el.classList.remove('flip');
-        void el.offsetWidth; // force reflow
+        void el.offsetWidth; // trigger reflow
         el.textContent = newVal;
         el.classList.add('flip');
       }
@@ -177,9 +153,8 @@
       const w = wrapper.clientWidth;
       const h = wrapper.clientHeight;
 
-      // Approx base dimensions
-      const baseWidth = (120 * 2) + 10 + 40 + 8; 
-      const baseHeight = 120 + 40 + 8; 
+      const baseWidth = (120 * 2) + 10 + 40 + 8;
+      const baseHeight = 120 + 40 + 8;
 
       const scale = Math.min(w / baseWidth, h / baseHeight);
       clock.style.transform = `scale(${scale})`;
