@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Flip Clock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * {
       box-sizing: border-box;
@@ -21,19 +22,20 @@
     }
 
     .clock-wrapper {
-      margin: 0px;
       transform-origin: top left;
+      transform: scale(0.85);
+      position: relative;
     }
 
     .clock {
       display: flex;
       gap: 10px;
-      border: 1px solid #444;
+      border: 1px solid #ccc;
       border-radius: 8px;
       padding: 20px;
-      background-color: rgba(0, 0, 0, 0.85);
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #000;
       position: relative;
-      color: #fff;
       transition: background-color 0.3s, border-color 0.3s;
     }
 
@@ -44,17 +46,17 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #888;
-      border: 1px solid #444;
+      background: #333;
+      border: 1px solid #aaa;
       cursor: pointer;
       transition: all 0.3s;
-      z-index: 2;
+      z-index: 10;
     }
 
     .time-box {
       width: 120px;
       height: 120px;
-      background-color: rgba(255, 255, 255, 0.05);
+      background-color: rgba(0, 0, 0, 0.05);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -71,36 +73,32 @@
       padding-bottom: 1rem;
     }
 
-    /* Light Mode */
-    body.light .clock {
-      background-color: rgba(255, 255, 255, 0.95);
-      border-color: #ccc;
-      color: #000;
+    /* Dark Mode */
+    body.dark .clock {
+      background-color: rgba(0, 0, 0, 0.85);
+      border-color: #444;
+      color: #fff;
     }
 
-    body.light .dot-toggle {
-      background: #333;
-      border-color: #aaa;
+    body.dark .dot-toggle {
+      background: #888;
+      border-color: #444;
     }
 
-    body.light .time-box {
-      background-color: rgba(0, 0, 0, 0.05);
+    body.dark .time-box {
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     /* Responsive scaling */
-    .clock-wrapper {
-      transform: scale(1);
-    }
-
     @media (max-width: 800px) {
       .clock-wrapper {
-        transform: scale(0.85);
+        transform: scale(0.75);
       }
     }
 
     @media (max-width: 600px) {
       .clock-wrapper {
-        transform: scale(0.7);
+        transform: scale(0.65);
       }
     }
 
@@ -141,8 +139,16 @@
     }
 
     function toggleMode() {
-      document.body.classList.toggle('light');
+      document.body.classList.toggle('dark');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark') ? 'true' : 'false');
     }
+
+    // Load mode from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark');
+      }
+    });
 
     setInterval(updateTime, 1000);
     updateTime();
